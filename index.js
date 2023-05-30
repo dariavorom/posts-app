@@ -4,8 +4,9 @@ import multer from 'multer';
 import { registerValidation } from './validations/auth.js';
 import { loginValidation } from './validations/login.js';
 import { checkAuth, handleValidationErrors } from './utils/index.js';
-import { postCreateValidation } from './validations/posts.js';
+import { postCreateValidation, postUpdateValidation } from './validations/posts.js';
 import { UserController, PostController } from './controllers/index.js';
+import cors from 'cors';
 
 mongoose
     .connect(
@@ -28,6 +29,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use('/uploads', express.static('uploads'));
 
@@ -38,6 +40,7 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 
 //CRUD-операции со статьями
 app.get('/posts', PostController.getAllPosts);
+app.get('/posts/tags', PostController.getLastTags);
 app.get('/posts/:id', PostController.getPost);
 app.post(
     '/posts',
@@ -50,7 +53,7 @@ app.delete('/posts/:id', checkAuth, PostController.deletePost);
 app.patch(
     '/posts/:id',
     checkAuth,
-    postCreateValidation,
+    postUpdateValidation,
     handleValidationErrors,
     PostController.updatePost
 );

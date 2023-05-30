@@ -3,11 +3,12 @@ import PostModel from '../models/post.js';
 export const createPost = async (req, res) => {
     try {
         const { title, text, tags, imageUrl } = req.body;
+
         const doc = new PostModel({
             title,
             text,
             imageUrl,
-            tags,
+            tags: tags,
             user: req.userId,
         });
 
@@ -28,6 +29,21 @@ export const getAllPosts = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             message: 'Не удалось получить статьи',
+        });
+    }
+};
+
+export const getLastTags = async (req, res) => {
+    try {
+        const posts = await PostModel.find().limit(5).exec();
+
+        const uniqueTags = new Set(posts.map((post) => post.tags).flat());
+        const tags = Array.from(uniqueTags).slice(0, 5);
+
+        res.json(tags);
+    } catch (err) {
+        res.status(500).json({
+            message: 'Не удалось получить тэги',
         });
     }
 };
