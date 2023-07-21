@@ -63,7 +63,7 @@ export const getPost = async (req, res) => {
                 returnDocument: 'after',
                 returnNewDocument: true,
             }
-        ).exec();
+        ).populate('user');
 
         if (!post) {
             res.status(404).json({

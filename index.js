@@ -15,7 +15,7 @@ mongoose
     .then(() => console.log('DB ok'))
     .catch((err) => console.log('DB error', err));
 
-const app = express();
+export const app = express();
 
 const storage = multer.diskStorage({
     destination: (_, file, cb) => {
@@ -63,12 +63,4 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
     res.json({
         url: `/uploads/${req.file.originalname}`,
     });
-});
-
-app.listen(4444, (err) => {
-    if (err) {
-        console.log('Server error', err);
-    }
-
-    console.log('server OK');
 });
